@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>任务八：JavaScript和树（二）</title>
+		<link rel="stylesheet" href="css/index.css">
+	</head>
+	<body>
+		<!--二叉树flex布局开始-->
+		<div class="root_box flex_box">
+			<!--左子树-->
+			<div class="box_2 flex_box">
+				<div class="box_3 flex_box">
+					<div class="box_4 flex_box">C</div>
+					B	
+					<div class="box_5 flex_box">D</div>	
+				</div>
+				A
+				<div class="box_6 flex_box">
+					<div class="box_7 flex_box">F</div>
+					E	
+					<div class="box_8 flex_box">G</div>	
+				</div>
+			</div>
+			root
+			<!--右子树-->
+			<div class="box_9 flex_box">
+				<div class="box_10 flex_box">
+					<div class="box_11 flex_box">J</div>
+					I	
+					<div class="box_12 flex_box">K</div>	
+				</div>
+				H
+				<div class="box_13 flex_box">
+					<div class="box_14 flex_box">M</div>
+					L	
+					<div class="box_15 flex_box">N</div>	
+				</div>
+			</div>
+
+		</div>
+		<!--二叉树flex布局结束-->
+		<div class="btn_container">
+			<div class="btn_pre btn">前序遍历</div>
+			<div class="btn_in btn">中序遍历</div>
+			<div class="btn_post btn">后序遍历</div>
+		</div>
+
+		<script type="text/javascript">
+			'use strict';
+
+			window.onload = function(){
+				
+				//前序遍历
+				function preOrderTranverse(node,arr){
+					//若节点存在则执行
+					if(node !== null){
+						//将节点存入数组				
+						arr.push(node);
+						preOrderTranverse(node.firstElementChild,arr);
+						preOrderTranverse(node.lastElementChild,arr);
+					}
+				}
+
+				//中序遍历
+				function inOrderTranverse(node,arr){
+					if(node !== null){
+						inOrderTranverse(node.firstElementChild,arr);
+						arr.push(node);
+						inOrderTranverse(node.lastElementChild,arr);
+					}
+				}
+
+				//后序遍历
+				function postOrderTranverse(node,arr){
+					if(node !== null){
+						postOrderTranverse(node.firstElementChild,arr);
+						postOrderTranverse(node.lastElementChild,arr);
+						arr.push(node);
+					}
+				}
+				
+				//遍历节点样式函数，当子元素被遍历时背景发生改变同时使其他不为当前被遍历到的元素背景初始化
+				function box_bgc(e){
+					//获取所有的节点
+					let nodeArr = document.querySelectorAll(".flex_box");
+					let box_length = nodeArr.length;
+					//将所有结点背景颜色初始化
+					for(let i = 0;i < box_length;i++){
+						nodeArr[i].style.backgroundColor = "#fff";
+						nodeArr[i].style.color = "#434A54";
+					}
+					//将被遍历到的节点样式突出显示（背景和对应节点代表字体的颜色）
+					e.style.backgroundColor = "#1abc9c";
+					e.style.color = "#fff";
+				}
+				
+				//遍历动画
+				//计时器声明
+				var timer = null;
+				function element_animation(arr,i){
+					//清空动画避免同时点击多个遍历时出现动画重叠
+					clearInterval(timer);
+					timer = setInterval(function(){		
+						//若i值大于节点个数，则将清除动画，即当指定遍历动画播放一遍后将动画初始化（结束）
+						if(i > arr.length - 1){
+							arr[arr.length - 1].style.backgroundColor = "#fff";
+							arr[arr.length - 1].style.color = "#434A54";
+							clearInterval(timer);
+							//从当前语句退出
+							return;
+						}else{
+							//调用遍历结点动画函数，使被遍历的结点样式改变
+							box_bgc(arr[i]);
+						}
+						++i;
+					},1000);
+					//clearInterval(timer);
+				}
+
+				//按钮点击事件
+				function Tranverse_btn(root,action){
+					//声明块级变量用以遍历各个节点时作为索引
+					let i = 0;
+					//声明空数组用于存储各个节点
+					var arr = [];
+					action(root,arr);
+					//调用遍历动画
+					element_animation(arr,i);
+				}
+
+				//选择器方法
+				var $ = function(e){
+					return document.querySelector(e);
+				}
+				
+				//执行函数
+				function init(){
+					//前序遍历点击
+					$(".btn_pre").onclick = function(){
+						Tranverse_btn($(".root_box"),preOrderTranverse);
+					};
+					//中序遍历点击
+					$(".btn_in").onclick = function(){
+						Tranverse_btn($(".root_box"),inOrderTranverse);
+					};
+					//后序遍历点击
+					$(".btn_post").onclick = function(){
+						Tranverse_btn($(".root_box"),postOrderTranverse);
+					};
+				};
+				
+				init();
+
+			}
+
+			
+		</script>
+	</body>
+</html>
