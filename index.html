@@ -6,77 +6,73 @@
 		<link rel="stylesheet" href="css/index.css">
 	</head>
 	<body>
-		<!--二叉树flex布局开始-->
-		<div class="root_box flex_box">
-			<!--左子树-->
-			<div class="box_2 flex_box">
-				<div class="box_3 flex_box">
-					<div class="box_4 flex_box">C</div>
-					B	
-					<div class="box_5 flex_box">D</div>	
+		<!--多叉树flex布局开始-->
+		<div class="root_box flex_box">程序猿
+			<!--子树-->
+			<div class="box_2 flex_box">前端
+				
+                <div class="box_3 flex_box">
+					<div class="box_4 flex_box">JS工程师</div>
+					<div class="box_5 flex_box">CSS视觉设计师</div>
+                    技术向	
+					<div class="box_5 flex_box">交互设计师</div>	
+					<div class="box_5 flex_box">前端架构师</div>	
 				</div>
-				A
-				<div class="box_6 flex_box">
-					<div class="box_7 flex_box">F</div>
-					E	
-					<div class="box_8 flex_box">G</div>	
+				
+				<div class="box_6 flex_box">设计向</div>
+
+                <div class="box_6 flex_box">
+					<div class="box_7 flex_box">产品经理</div>
+					管理向	
+					<div class="box_8 flex_box">产品顾问</div>	
 				</div>
-			</div>
-			root
-			<!--右子树-->
-			<div class="box_9 flex_box">
-				<div class="box_10 flex_box">
-					<div class="box_11 flex_box">J</div>
-					I	
-					<div class="box_12 flex_box">K</div>	
-				</div>
-				H
-				<div class="box_13 flex_box">
-					<div class="box_14 flex_box">M</div>
-					L	
-					<div class="box_15 flex_box">N</div>	
-				</div>
+
 			</div>
 
+			<!--子树-->
+			<div class="box_9 flex_box">后端
+				<div class="box_10 flex_box">技术向
+					<div class="box_11 flex_box">大数据挖掘</div>	
+					<div class="box_12 flex_box">测试工程师</div>	
+					<div class="box_12 flex_box">开发工程师</div>	
+				</div>
+				
+				<div class="box_13 flex_box">
+					<div class="box_14 flex_box">产品经理
+                        <div class="box_14 flex_box">产品总监</div>
+                    </div>
+					管理向	
+					<div class="box_15 flex_box">产品顾问</div>	
+				</div>
+			</div>
+            <!--子树-->
+			<div class="box_9 flex_box">全栈</div>
+
 		</div>
-		<!--二叉树flex布局结束-->
+		<!--多叉树flex布局结束-->
 		<div class="btn_container">
-			<div class="btn_pre btn">前序遍历</div>
-			<div class="btn_in btn">中序遍历</div>
-			<div class="btn_post btn">后序遍历</div>
+            <div class="btn_orderTranverse btn">开始遍历</div>
+            <input type="text" name="search" class="search" placeholder="请输入查询词" />
+            <div class="btn_search btn">查询</div>
 		</div>
 
 		<script type="text/javascript">
+			'use strict';
 			window.onload = function(){
 				
-				//前序遍历
-				function preOrderTranverse(node,arr){
-					//若节点存在则执行
-					if(node !== null){
-						//将节点存入数组				
-						arr.push(node);
-						preOrderTranverse(node.firstElementChild,arr);
-						preOrderTranverse(node.lastElementChild,arr);
-					}
+				//递归实现(深度优先)
+				function orderTranverse(node,arr){
+                    if(node != null){
+                        arr.push(node);
+                        for(let i = 0;i < node.children.length;i++){
+                            if(node.children[i].nodeType == 1){
+                                orderTranverse(node.children[i],arr);
+                            }
+                        }
+                    }
+                    
 				}
 
-				//中序遍历
-				function inOrderTranverse(node,arr){
-					if(node !== null){
-						inOrderTranverse(node.firstElementChild,arr);
-						arr.push(node);
-						inOrderTranverse(node.lastElementChild,arr);
-					}
-				}
-
-				//后序遍历
-				function postOrderTranverse(node,arr){
-					if(node !== null){
-						postOrderTranverse(node.firstElementChild,arr);
-						postOrderTranverse(node.lastElementChild,arr);
-						arr.push(node);
-					}
-				}
 				
 				//遍历节点样式函数，当子元素被遍历时背景发生改变同时使其他不为当前被遍历到的元素背景初始化
 				function box_bgc(e){
@@ -123,6 +119,10 @@
 					//声明空数组用于存储各个节点
 					var arr = [];
 					action(root,arr);
+                    /*for(let x=0;x<arr.length;x++){
+                        alert(arr[x].innerHTML);
+                    }*/
+                    
 					//调用遍历动画
 					element_animation(arr,i);
 				}
@@ -134,17 +134,9 @@
 				
 				//执行函数
 				function init(){
-					//前序遍历点击
-					$(".btn_pre").onclick = function(){
-						Tranverse_btn($(".root_box"),preOrderTranverse);
-					};
-					//中序遍历点击
-					$(".btn_in").onclick = function(){
-						Tranverse_btn($(".root_box"),inOrderTranverse);
-					};
-					//后序遍历点击
-					$(".btn_post").onclick = function(){
-						Tranverse_btn($(".root_box"),postOrderTranverse);
+					//递归实现按钮绑定点击事件
+					$(".btn_orderTranverse").onclick = function(){
+						Tranverse_btn($(".root_box"),orderTranverse);
 					};
 				};
 				
