@@ -51,7 +51,7 @@
 		</div>
 		<!--多叉树flex布局结束-->
 		<div class="btn_container">
-            <div class="btn_orderTranverse btn">开始遍历</div>
+            <div class="btn_orderTranverse btn">深度遍历</div>
             <input type="text" name="search" class="search" placeholder="请输入查询词" />
             <div class="btn_search btn">查询</div>
 		</div>
@@ -59,9 +59,13 @@
 		<script type="text/javascript">
 			'use strict';
 			window.onload = function(){
-				
-				//递归实现(深度优先)
-				function orderTranverse(node,arr){
+                var searchfinish = false;
+				//选择器方法
+				var $ = function(e){
+					return document.querySelector(e);
+				}
+				//递归实现(深度优先)           
+				function orderTranverse(node,arr,click_judge){
                     if(node != null){
                         arr.push(node);
                         for(let i = 0;i < node.children.length;i++){
@@ -70,12 +74,11 @@
                             }
                         }
                     }
-                    
-				}
+                }
 
 				
 				//遍历节点样式函数，当子元素被遍历时背景发生改变同时使其他不为当前被遍历到的元素背景初始化
-				function box_bgc(e){
+				function box_bgc(e,click_judge){
 					//获取所有的节点
 					let nodeArr = document.querySelectorAll(".flex_box");
 					let box_length = nodeArr.length;
@@ -87,12 +90,27 @@
 					//将被遍历到的节点样式突出显示（背景和对应节点代表字体的颜色）
 					e.style.backgroundColor = "#1abc9c";
 					e.style.color = "#fff";
+                     //判断查询按钮是否被点击
+                    if(click_judge){
+                        for(let x = 0;x < e.childNodes.length;x++){
+                            var search_content = document.querySelector(".search").value;
+                            if(e.childNodes[x].nodeType == 3&&e.childNodes[x].nodeValue.search(search_content) != -1){
+                                e.style.fontSize = "20px";
+                                e.style.fontWeight = "900";
+                                searchfinish = true;
+                            }  
+                        }
+                        if(!searchfinish){
+                            alert("!!!!!!!!!!!!!");
+                            console.log("!!!!!!!!!!!!!!");
+                        }
+                    }
 				}
 				
 				//遍历动画
 				//计时器声明
 				var timer = null;
-				function element_animation(arr,i){
+				function element_animation(arr,i,click_judge){
 					//清空动画避免同时点击多个遍历时出现动画重叠
 					clearInterval(timer);
 					timer = setInterval(function(){		
@@ -105,7 +123,7 @@
 							return;
 						}else{
 							//调用遍历结点动画函数，使被遍历的结点样式改变
-							box_bgc(arr[i]);
+							box_bgc(arr[i],click_judge);
 						}
 						++i;
 					},1000);
@@ -113,35 +131,58 @@
 				}
 
 				//按钮点击事件
-				function Tranverse_btn(root,action){
+				function Tranverse_btn(root,action,click_judge){
 					//声明块级变量用以遍历各个节点时作为索引
 					let i = 0;
 					//声明空数组用于存储各个节点
 					var arr = [];
-					action(root,arr);
+					action(root,arr,click_judge);
                     /*for(let x=0;x<arr.length;x++){
                         alert(arr[x].innerHTML);
                     }*/
                     
 					//调用遍历动画
-					element_animation(arr,i);
-				}
-
-				//选择器方法
-				var $ = function(e){
-					return document.querySelector(e);
+					element_animation(arr,i,click_judge);
 				}
 				
 				//执行函数
 				function init(){
 					//递归实现按钮绑定点击事件
 					$(".btn_orderTranverse").onclick = function(){
-						Tranverse_btn($(".root_box"),orderTranverse);
+                        start();
+                        var isClicked = false;
+						Tranverse_btn($(".root_box"),orderTranverse,isClicked);
 					};
+                    //查询点击
+                    $(".btn_search").onclick = function(){
+                        var search_content = document.querySelector(".search").value;
+                        if(search_content == ""){
+                            alert("输入点什么吧！");
+                        }else{
+                            start();
+                            var isClicked = true;
+                            Tranverse_btn($(".root_box"),orderTranverse,isClicked);
+                            
+                        }    
+                    }
+                    
 				};
-				
-				init();
+				//元素显示初始化
+                function start(){
+                    //获取所有的节点
+                    let nodeArr = document.querySelectorAll(".flex_box");
+                    let box_length = nodeArr.length;
+                    //将所有结点背景颜色初始化
+                    for(let i = 0;i < box_length;i++){
+                        nodeArr[i].style.backgroundColor = "#fff";
+                        nodeArr[i].style.color = "#434A54";
+                        nodeArr[i].style.fontSize = "10px";
+                        nodeArr[i].style.fontWeight = "700";
+                    }
 
+                }
+				init();
+                
 			}
 
 			
