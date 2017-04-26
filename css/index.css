@@ -40,6 +40,7 @@ a{
 .flex_box:hover{
     transform:scale(1.1);
 }
+
 /*按钮设置*/
 .btn_container{
     position:relative;
