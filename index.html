@@ -55,11 +55,10 @@
             <input type="text" name="search" class="search" placeholder="请输入查询词" />
             <div class="btn_search btn">查询</div>
 		</div>
-
+		<span id="prompt">查询词查找中...</span>
 		<script type="text/javascript">
 			'use strict';
 			window.onload = function(){
-                var searchfinish = false;
 				//选择器方法
 				var $ = function(e){
 					return document.querySelector(e);
@@ -78,7 +77,7 @@
 
 				
 				//遍历节点样式函数，当子元素被遍历时背景发生改变同时使其他不为当前被遍历到的元素背景初始化
-				function box_bgc(e,click_judge){
+				function box_bgc(e,click_judge,arr){
 					//获取所有的节点
 					let nodeArr = document.querySelectorAll(".flex_box");
 					let box_length = nodeArr.length;
@@ -97,20 +96,21 @@
                             if(e.childNodes[x].nodeType == 3&&e.childNodes[x].nodeValue.search(search_content) != -1){
                                 e.style.fontSize = "20px";
                                 e.style.fontWeight = "900";
-                                searchfinish = true;
-                            }  
+								document.querySelector("#prompt").innerText = "已找到查询词并放大！";
+								clearTimeout(timer_1);
+                            }else{			
+							} 					  
                         }
-                        if(!searchfinish){
-                            alert("!!!!!!!!!!!!!");
-                            console.log("!!!!!!!!!!!!!!");
-                        }
-                    }
+                    }			
 				}
 				
 				//遍历动画
 				//计时器声明
 				var timer = null;
+				var timer_1 = null;
+				var timer_2 = null;
 				function element_animation(arr,i,click_judge){
+					console.log(arr);
 					//清空动画避免同时点击多个遍历时出现动画重叠
 					clearInterval(timer);
 					timer = setInterval(function(){		
@@ -123,10 +123,13 @@
 							return;
 						}else{
 							//调用遍历结点动画函数，使被遍历的结点样式改变
-							box_bgc(arr[i],click_judge);
+							box_bgc(arr[i],click_judge,arr);
 						}
 						++i;
 					},1000);
+					timer_2 = setTimeout(function(){
+						document.querySelector("#prompt").style.display = "none"; 
+					},arr.length * 1300);
 					//clearInterval(timer);
 				}
 
@@ -155,15 +158,23 @@
 					};
                     //查询点击
                     $(".btn_search").onclick = function(){
+						clearTimeout(timer_1);
+						clearTimeout(timer_2);
                         var search_content = document.querySelector(".search").value;
                         if(search_content == ""){
                             alert("输入点什么吧！");
                         }else{
                             start();
                             var isClicked = true;
-                            Tranverse_btn($(".root_box"),orderTranverse,isClicked);
-                            
-                        }    
+                            Tranverse_btn($(".root_box"),orderTranverse,isClicked);										
+                        }
+						document.querySelector("#prompt").style.display = "block"; 
+						document.querySelector("#prompt").innerText = "查询词查找中...";
+						timer_1 = setInterval(function(){
+							if(document.querySelector("#prompt").innerText != "已找到查询词并放大！"){
+								document.querySelector("#prompt").innerText = "未找到查询词！";	
+							}else{}
+						},23000)
                     }
                     
 				};
@@ -182,7 +193,7 @@
 
                 }
 				init();
-                
+				
 			}
 
 			
