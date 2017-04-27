@@ -95,3 +95,19 @@ a{
     top:130px;
 }
 
+#prompt{
+    display:none;
+    position:absolute;
+    top:650px;
+    left:50%;
+    height:50px;
+    font-size:20px;
+    font-weight:700;
+    line-height:50px;
+    text-align:center;
+    color:#434A54;
+    transform:translateX(-42%);
+    -webkit-transform:translateX(-42%);
+    -o-transform:translateX(-42%);
+    
+}
